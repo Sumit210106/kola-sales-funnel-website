@@ -1,231 +1,312 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import { Star, Zap, Shield, Clock, Globe, BarChart3 } from "lucide-react";
+import { motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+import {
+  CheckCircle2,
+  Clock3,
+  ShieldCheck,
+  Sparkles,
+  // Terminal,
+  Zap,
+} from "lucide-react";
 import { PrimaryCTA, GhostCTA } from "./Primitives";
-
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease } },
 };
 
+const checks = [
+  "48-hour delivery",
+  "No lock-in contracts",
+  "30-day money-back",
+  "Mobile-first by default",
+  "Built for Google Ads & SEO",
+];
+
+const terminalLines = [
+  { prompt: "$", text: "create website --business local --market AU", tone: "text-background/50" },
+  { prompt: "✓", text: "design system generated", tone: "text-[oklch(0.55_0.16_150)]" },
+  { prompt: "✓", text: "mobile layout optimized", tone: "text-[oklch(0.55_0.16_150)]" },
+  { prompt: "✓", text: "SEO metadata and analytics wired", tone: "text-[oklch(0.55_0.16_150)]" },
+  { prompt: "→", text: "deploying fast lead funnel...", tone: "text-brand" },
+];
+
 export function Hero() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.3]);
+  const typedTerminal = useTypedTerminal(terminalLines);
 
   return (
-    <div
-      ref={ref}
-      id="top"
-      className="relative overflow-hidden pt-36 pb-24 md:pt-36 md:pb-32"
-    >
-      {/* Backgrounds */}
-      <div className="absolute inset-0 grid-bg" aria-hidden />
-      <div
-        className="absolute left-1/2 top-[-10%] h-[700px] w-[900px] -translate-x-1/2 conic-glow opacity-80"
-        aria-hidden
-      />
-      <div className="absolute inset-0 noise opacity-50" aria-hidden />
+    <section id="top" className="relative overflow-hidden bg-hero px-5 pb-14 pt-28 md:px-8 md:pb-20 md:pt-32">
+      <div className="absolute inset-0 grid-bg opacity-70" aria-hidden />
+      <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-background to-transparent" aria-hidden />
 
-      <motion.div style={{ y, opacity }} className="relative mx-auto max-w-5xl px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05, duration: 0.6, ease }}
-          className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full glass hairline px-3 py-1 text-xs text-muted-foreground"
-        >
-          <span className="flex -space-x-1.5">
-            {[0, 1, 2, 3].map((i) => (
-              <span
-                key={i}
-                className="h-4 w-4 rounded-full bg-gradient-to-br from-brand to-brand-glow ring-2 ring-background"
-              />
+      <div className="relative mx-auto grid max-w-6xl items-center gap-10 lg:min-h-170 lg:grid-cols-[1.02fr_0.98fr] lg:gap-12">
+        <div className="flex flex-col items-start">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease }}
+            className="inline-flex items-center gap-2 rounded-full hairline bg-surface-elevated/75 px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-soft backdrop-blur"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-brand" />
+            Web design for small business growth
+          </motion.div>
+
+          <motion.h1
+            initial="hidden"
+            animate="show"
+            variants={fadeUp}
+            className="mt-6 max-w-3xl text-balance font-display text-5xl font-semibold leading-[0.98] tracking-[-0.02em] sm:text-6xl lg:text-7xl"
+          >
+            A conversion ready website, live in{" "}
+            <span className="text-gradient">48 hours.</span>
+          </motion.h1>
+
+          <motion.p
+            initial="hidden"
+            animate="show"
+            variants={fadeUp}
+            transition={{ delay: 0.08 }}
+            className="mt-6 max-w-xl text-base leading-8 text-muted-foreground md:text-lg"
+          >
+            Fast, polished websites for Australian businesses that need more
+            calls, bookings, and quote requests from Google, ads, and mobile
+            visitors.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18, duration: 0.6, ease }}
+            className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center"
+          >
+            <PrimaryCTA>Get my $99 website</PrimaryCTA>
+            <GhostCTA href="#showcase">View live examples</GhostCTA>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.32, duration: 0.6 }}
+            className="mt-8 grid w-full grid-cols-1 gap-2 border-t border-hairline pt-6 sm:grid-cols-2"
+          >
+            {checks.map((c) => (
+              <span key={c} className="flex items-center gap-2 text-sm text-muted-foreground">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-[oklch(0.55_0.16_150)]" />
+                {c}
+              </span>
             ))}
-          </span>
-          Trusted by 500+ Australian small businesses
-          <span className="ml-1 inline-flex items-center gap-1 rounded-full bg-foreground/5 px-2 py-0.5 text-[10px] font-medium text-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-[oklch(0.7_0.2_150)]" /> Live
-          </span>
-        </motion.div>
-
-        <motion.h1
-          initial="hidden"
-          animate="show"
-          variants={fadeUp}
-          className="mx-auto max-w-4xl text-balance text-5xl font-semibold leading-[1.02] tracking-[-0.035em] md:text-7xl lg:text-[5.5rem]"
-        >
-          A premium website.
-          <br />
-          <span className="glow-shimmer">Live in 48 hours.</span>
-          <br />
-          For just <span className="text-gradient">$99.</span>
-        </motion.h1>
-
-        <motion.p
-          initial="hidden"
-          animate="show"
-          variants={fadeUp}
-          transition={{ delay: 0.1 }}
-          className="mx-auto mt-6 max-w-2xl text-balance text-lg text-muted-foreground md:text-xl"
-        >
-          Production-grade, mobile-first websites designed by an Australian team. No
-          builders, no contracts — just a beautiful site that wins you customers.
-        </motion.p>
+          </motion.div>
+        </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25, duration: 0.6, ease }}
-          className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
+          initial={{ opacity: 0, y: 24, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.18, duration: 0.75, ease }}
+          className="relative mx-auto w-full max-w-xl lg:max-w-none"
         >
-          <PrimaryCTA>Get my $99 website</PrimaryCTA>
-          <GhostCTA href="#showcase">View live examples</GhostCTA>
-        </motion.div>
+          <div className="absolute -inset-8 rounded-[3rem] bg-brand/10 blur-3xl" aria-hidden />
+          <div className="relative rounded-[2.25rem] hairline bg-surface-elevated/70 p-3 shadow-elevated backdrop-blur">
+            <div className="overflow-hidden rounded-[1.75rem] bg-background">
+              <div className="flex items-center justify-between border-b border-hairline bg-surface-elevated/80 px-5 py-4">
+                <div className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-accent-coral" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.78_0.18_75)]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.62_0.16_160)]" />
+                </div>
+                <span className="text-xs font-medium text-muted-foreground">Preview</span>
+              </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.45, duration: 0.6 }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs text-muted-foreground"
-        >
-          {[
-            { icon: Star, label: "4.9/5 from 127 reviews" },
-            { icon: Clock, label: "48hr delivery" },
-            { icon: Shield, label: "30-day guarantee" },
-            { icon: Globe, label: "AU-based team" },
-          ].map(({ icon: I, label }) => (
-            <span key={label} className="inline-flex items-center gap-1.5">
-              <I className="h-3.5 w-3.5 text-brand" /> {label}
-            </span>
-          ))}
-        </motion.div>
-      </motion.div>
+              <div className="relative px-5 pb-6 pt-8 md:px-7 md:pb-8">
+                <div className="absolute inset-x-8 top-0 h-px bg-linear-to-r from-transparent via-brand/35 to-transparent" aria-hidden />
 
-      {/* Device mock */}
-      <motion.div
-        initial={{ opacity: 0, y: 60, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ delay: 0.4, duration: 1, ease }}
-        className="relative mx-auto mt-20 w-full max-w-5xl px-6"
-      >
-        {/* <DeviceMock /> */}
-      </motion.div>
-    </div>
+                <div className="mx-auto max-w-sm text-center">
+                  {/* <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-foreground text-background shadow-soft">
+                    <Terminal className="h-5 w-5" />
+                  </div> */}
+                  <p className="mt-5 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                    Build terminal
+                  </p>
+                  <h2 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-[-0.02em]">
+                    Your site, compiling into leads.
+                  </h2>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                    A focused build process for speed, search, mobile polish,
+                    and conversion tracking.
+                  </p>
+                </div>
+
+                <div className="mt-8 overflow-hidden rounded-[1.5rem] bg-foreground text-background shadow-elevated">
+                  <div className="flex items-center justify-between border-b border-background/10 px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2.5 w-2.5 rounded-full bg-accent-coral" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.78_0.18_75)]" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.62_0.16_160)]" />
+                    </div>
+                    <span className="font-mono text-[11px] text-background/45">launch.sh</span>
+                  </div>
+
+                  <div className="min-h-49 space-y-3 px-4 py-5 font-mono text-[12px] leading-relaxed sm:min-h-51 sm:text-[13px]">
+                    {typedTerminal.lines.map((line, index) => (
+                      <motion.div
+                        key={line.text}
+                        initial={false}
+                        animate={{ opacity: line.visible ? 1 : 0 }}
+                        transition={{ duration: 0.18, ease }}
+                        className="flex gap-3 whitespace-pre-wrap"
+                      >
+                        <span className={`w-4 shrink-0 ${line.tone}`}>{line.prompt}</span>
+                        <span
+                          className={line.prompt === "$" ? "text-background/85" : "text-background/62"}
+                        >
+                          {line.typed}
+                          {typedTerminal.activeLine === index && (
+                            <motion.span
+                              aria-hidden
+                              animate={{ opacity: [1, 1, 0, 0] }}
+                              transition={{ duration: 0.9, repeat: Infinity, ease: "linear" }}
+                              className="ml-0.5 inline-block h-4 w-1 translate-y-0.5 bg-brand"
+                            />
+                          )}
+                        </span>
+                      </motion.div>
+                    ))}
+
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: typedTerminal.done ? 1 : 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex gap-3 pt-2"
+                    >
+                      <motion.span
+                        aria-hidden
+                        animate={{ opacity: [1, 1, 0, 0] }}
+                        transition={{ duration: 0.9, repeat: Infinity, ease: "linear" }}
+                        className="w-4 shrink-0 text-brand"
+                      >
+                        ▌
+                      </motion.span>
+                      <span className="text-background/45">ready for launch</span>
+                    </motion.div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-px bg-background/10 text-center">
+                    <div className="bg-foreground px-3 py-4">
+                      <p className="font-display text-2xl font-semibold leading-none">98</p>
+                      <p className="mt-1 text-[11px] text-background/45">speed</p>
+                    </div>
+                    <div className="bg-foreground px-3 py-4">
+                      <p className="font-display text-2xl font-semibold leading-none">48h</p>
+                      <p className="mt-1 text-[11px] text-background/45">launch</p>
+                    </div>
+                    <div className="bg-foreground px-3 py-4">
+                      <p className="font-display text-2xl font-semibold leading-none">SEO</p>
+                      <p className="mt-1 text-[11px] text-background/45">ready</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 hidden grid-cols-3 gap-3 sm:grid">
+                  <MiniMetric icon={Zap} label="Speed" value="98" />
+                  <MiniMetric icon={Clock3} label="Launch" value="48h" />
+                  <MiniMetric icon={ShieldCheck} label="Guarantee" value="30d" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute -bottom-4 left-1/2 hidden w-[78%] -translate-x-1/2 rounded-2xl hairline bg-surface-elevated/90 px-4 py-3 shadow-soft backdrop-blur sm:block">
+            <div className="flex items-center justify-center gap-2 text-sm font-medium">
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-[oklch(0.55_0.16_150)]" />
+              SEO, forms, analytics and mobile UX included
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
   );
 }
 
-// export function DeviceMock() {
-//   return (
-//     <div className="relative">
-//       {/* Glow */}
-//       <div className="absolute inset-x-10 -top-10 h-40 bg-brand opacity-30 blur-3xl" aria-hidden />
-//       <div className="relative rounded-[1.75rem] hairline bg-surface-elevated p-2 shadow-elevated">
-//         <div className="flex items-center gap-1.5 px-3 py-2">
-//           <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.74_0.16_25)]" />
-//           <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.85_0.15_85)]" />
-//           <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.78_0.15_150)]" />
-//           <span className="ml-3 inline-flex items-center gap-1.5 rounded-md hairline bg-surface px-2.5 py-1 text-[10px] text-muted-foreground">
-//             <Globe className="h-3 w-3" /> yourbusiness.com.au
-//           </span>
-//         </div>
-//         <div className="overflow-hidden rounded-[1.4rem] bg-hero">
-//           <div className="grid grid-cols-12 gap-3 p-6 md:p-8">
-//             <div className="col-span-12 md:col-span-7">
-//               <div className="inline-block rounded-full hairline bg-surface-elevated px-2 py-0.5 text-[9px] uppercase tracking-widest text-muted-foreground">
-//                 Sydney · since 2014
-//               </div>
-//               <div className="mt-3 h-9 w-5/6 rounded-lg bg-foreground/90" />
-//               <div className="mt-2 h-9 w-3/4 rounded-lg bg-foreground/70" />
-//               <div className="mt-4 h-3 w-full rounded-full bg-foreground/20" />
-//               <div className="mt-2 h-3 w-4/5 rounded-full bg-foreground/15" />
-//               <div className="mt-5 flex gap-2">
-//                 <div className="rounded-full bg-foreground px-4 py-2 text-[10px] text-background">
-//                   Get a quote
-//                 </div>
-//                 <div className="rounded-full hairline bg-surface-elevated px-4 py-2 text-[10px]">
-//                   Our work
-//                 </div>
-//               </div>
-//             </div>
-//             <div className="col-span-12 md:col-span-5">
-//               <div className="aspect-[4/3] rounded-2xl bg-brand shadow-glow" />
-//             </div>
-//             {[0, 1, 2].map((i) => (
-//               <div
-//                 key={i}
-//                 className="col-span-12 mt-2 rounded-2xl hairline bg-surface-elevated p-4 sm:col-span-4"
-//               >
-//                 <div className="h-2 w-2/3 rounded-full bg-foreground/60" />
-//                 <div className="mt-2 h-2 w-full rounded-full bg-foreground/15" />
-//                 <div className="mt-1 h-2 w-4/5 rounded-full bg-foreground/15" />
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </div>
+function useTypedTerminal(lines: typeof terminalLines) {
+  const [typedChars, setTypedChars] = useState(0);
+  const totalChars = useMemo(
+    () => lines.reduce((total, line) => total + line.text.length, 0),
+    [lines],
+  );
 
-//       {/* Floating phone */}
-//       <motion.div
-//         initial={{ opacity: 0, x: 30, y: 30 }}
-//         animate={{ opacity: 1, x: 0, y: 0 }}
-//         transition={{ delay: 0.7, duration: 0.9, ease }}
-//         className="absolute -bottom-12 right-0 hidden w-44 rotate-[6deg] floaty md:block md:right-[-2rem] md:w-56"
-//       >
-//         <div className="rounded-[2rem] hairline bg-surface-elevated p-1.5 shadow-elevated">
-//           <div className="overflow-hidden rounded-[1.6rem] bg-hero p-3">
-//             <div className="h-2 w-12 rounded-full bg-foreground/70" />
-//             <div className="mt-2 h-4 w-4/5 rounded-md bg-foreground/85" />
-//             <div className="mt-3 aspect-square rounded-2xl bg-brand" />
-//             <div className="mt-3 h-2 w-full rounded-full bg-foreground/20" />
-//             <div className="mt-1 h-2 w-3/4 rounded-full bg-foreground/15" />
-//             <div className="mt-3 h-6 rounded-full bg-foreground" />
-//           </div>
-//         </div>
-//       </motion.div>
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-//       {/* Floating badges */}
-//       <motion.div
-//         initial={{ opacity: 0, scale: 0.8 }}
-//         animate={{ opacity: 1, scale: 1 }}
-//         transition={{ delay: 1, duration: 0.5 }}
-//         className="absolute -left-4 top-16 hidden rounded-2xl glass hairline p-3 shadow-soft md:block"
-//       >
-//         <div className="flex items-center gap-2">
-//           <div className="grid h-9 w-9 place-items-center rounded-xl bg-brand text-brand-foreground">
-//             <Zap className="h-4 w-4" />
-//           </div>
-//           <div>
-//             <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-//               PageSpeed
-//             </div>
-//             <div className="text-sm font-semibold">98 / 100</div>
-//           </div>
-//         </div>
-//       </motion.div>
-//       <motion.div
-//         initial={{ opacity: 0, scale: 0.8 }}
-//         animate={{ opacity: 1, scale: 1 }}
-//         transition={{ delay: 1.1, duration: 0.5 }}
-//         className="absolute -right-2 top-32 hidden rounded-2xl glass hairline p-3 shadow-soft md:block lg:right-[-3rem]"
-//       >
-//         <div className="flex items-center gap-2">
-//           <div className="grid h-9 w-9 place-items-center rounded-xl bg-foreground text-background">
-//             <BarChart3 className="h-4 w-4" />
-//           </div>
-//           <div>
-//             <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-//               Conversions
-//             </div>
-//             <div className="text-sm font-semibold">+34% mo/mo</div>
-//           </div>
-//         </div>
-//       </motion.div>
-//     </div>
-//   );
-// }
+    if (media.matches) {
+      setTypedChars(totalChars);
+      return;
+    }
 
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const startDelay = 450;
+    const typeDelay = 24;
+
+    timeoutId = setTimeout(function typeNext() {
+      setTypedChars((current) => {
+        if (current >= totalChars) return current;
+
+        timeoutId = setTimeout(typeNext, typeDelay);
+        return current + 1;
+      });
+    }, startDelay);
+
+    return () => clearTimeout(timeoutId);
+  }, [totalChars]);
+
+  let remaining = typedChars;
+  let activeLine = -1;
+
+  const typedLines = lines.map((line, index) => {
+    const typedLength = Math.max(0, Math.min(line.text.length, remaining));
+    remaining -= typedLength;
+
+    if (activeLine === -1 && typedLength > 0 && typedLength < line.text.length) {
+      activeLine = index;
+    }
+
+    return {
+      ...line,
+      typed: line.text.slice(0, typedLength),
+      visible: typedLength > 0 || typedChars >= lines.slice(0, index).reduce((total, item) => total + item.text.length, 0),
+    };
+  });
+
+  if (activeLine === -1 && typedChars < totalChars) {
+    activeLine = typedLines.findIndex((line) => line.typed.length === 0);
+  }
+
+  return {
+    activeLine,
+    done: typedChars >= totalChars,
+    lines: typedLines,
+  };
+}
+
+function MiniMetric({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof Clock3;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-2xl bg-surface-elevated p-3 text-center shadow-soft">
+      <div className="flex justify-center">
+        <div className="grid h-8 w-8 place-items-center rounded-xl bg-foreground/5">
+          <Icon className="h-4 w-4 text-foreground" />
+        </div>
+      </div>
+      <p className="mt-3 font-display text-xl font-semibold leading-none">{value}</p>
+      <p className="mt-1 text-[11px] text-muted-foreground">{label}</p>
+    </div>
+  );
+}

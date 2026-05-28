@@ -6,10 +6,10 @@ import { Section, SectionHeader } from "./Primitives";
 
 
 const ease = [0.22, 1, 0.36, 1] as const;
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
-};
+// const fadeUp = {
+//   hidden: { opacity: 0, y: 24 },
+//   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
+// };
 
 
 
@@ -43,11 +43,11 @@ export function Features() {
               <Palette className="h-5 w-5" />
             </div>
             <h3 className="mt-5 text-2xl font-semibold tracking-tight md:text-3xl">
-              Custom design — not a template.
+              Custom design, not a template.
             </h3>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">
-              Every site is hand-designed around your brand, voice and customers. No
-              cookie-cutter themes, no drag-and-drop fingerprints.
+              Every site is hand designed around your brand, voice and customers. No
+              cookie cutter themes, no drag and drop fingerprints.
             </p>
           </div>
           <div className="relative mt-6 grid grid-cols-3 gap-3">
@@ -59,7 +59,7 @@ export function Features() {
               <motion.div
                 key={i}
                 whileHover={{ y: -4 }}
-                className="aspect-[4/3] rounded-2xl shadow-soft"
+                className="aspect-4/3 rounded-2xl shadow-soft"
                 style={{ background: c }}
               />
             ))}
@@ -69,16 +69,16 @@ export function Features() {
         {/* Mobile */}
         <BentoCard
           icon={Smartphone}
-          title="Pixel-perfect on every device"
-          desc="Mobile-first by default. Tested on iOS, Android, tablets and desktop."
+          title="Pixel perfect on every device"
+          desc="Mobile first by default. Tested on iOS, Android, tablets and desktop."
           colSpan="md:col-span-2"
         />
 
         {/* Speed */}
         <BentoCard
           icon={Zap}
-          title="Lightning-fast load times"
-          desc="98+ PageSpeed scores. Optimised images, modern stack, edge-cached."
+          title="Lightning fast load times"
+          desc="98+ PageSpeed scores. Optimised images, modern stack, edge cached."
           colSpan="md:col-span-2"
           extra={
             <div className="mt-5 flex items-end gap-1">
@@ -93,7 +93,7 @@ export function Features() {
                   style={{ height: `${h}%` }}
                 />
               ))}
-              <span className="ml-2 text-xs text-muted-foreground">PageSpeed</span>
+              
             </div>
           }
         />
@@ -102,15 +102,15 @@ export function Features() {
         <BentoCard
           icon={Search}
           title="SEO foundations baked in"
-          desc="Meta tags, schema, sitemaps, fast Core Web Vitals — Google-ready on day one."
+          desc="Meta tags, schema, sitemaps, fast Core Web Vitals Google ready on day one."
           colSpan="md:col-span-3"
         />
 
         {/* Forms */}
         <BentoCard
           icon={MessageSquare}
-          title="Lead-capture forms that work"
-          desc="Spam-protected forms wired to your inbox the moment your site goes live."
+          title="Lead capture forms that work"
+          desc="Spam protected forms wired to your inbox the moment your site goes live."
           colSpan="md:col-span-3"
         />
 
@@ -118,7 +118,7 @@ export function Features() {
         <BentoCard
           icon={Calendar}
           title="Bookings & calendars"
-          desc="Optional Calendly / Square Appointments — let clients book in two taps."
+          desc="Optional Calendly / Square Appointments, let clients book in two taps."
           colSpan="md:col-span-2"
         />
         {/* Payments */}
@@ -132,7 +132,7 @@ export function Features() {
         <BentoCard
           icon={BarChart3}
           title="Real analytics, no fluff"
-          desc="GA4 or Plausible — see exactly what's converting from day one."
+          desc="GA4 or Plausible see exactly what's converting from day one."
           colSpan="md:col-span-2"
         />
       </div>

@@ -1,16 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, X, Zap, ArrowUpRight } from "lucide-react";
+import { ArrowRight, X, Zap, ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Section, SectionHeader } from "./Primitives";
+import {
+  type CarouselApi,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export function Showcase() {
   const [selectedCard, setSelectedCard] = useState<typeof cards[0] | null>(null);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+  const [isPaused, setIsPaused] = useState(false);
 
-  const cards = [
+  const cards = useMemo(() => [
     {
       tag: "Flooring & Trades",
       name: "Carpet Cuts",
@@ -107,7 +117,57 @@ export function Showcase() {
       performance: "99 / 100",
       delivery: "48 hours",
     },
-  ];
+  ], []);
+
+  const scrollTo = useCallback(
+    (index: number) => {
+      carouselApi?.scrollTo(index);
+      setIsPaused(true);
+    },
+    [carouselApi],
+  );
+
+  const scrollPrev = useCallback(() => {
+    carouselApi?.scrollPrev();
+    setIsPaused(true);
+  }, [carouselApi]);
+
+  const scrollNext = useCallback(() => {
+    carouselApi?.scrollNext();
+    setIsPaused(true);
+  }, [carouselApi]);
+
+  useEffect(() => {
+    if (!carouselApi) return;
+
+    const updateCarouselState = () => {
+      setSelectedIndex(carouselApi.selectedScrollSnap());
+      setScrollSnaps(carouselApi.scrollSnapList());
+    };
+
+    updateCarouselState();
+    carouselApi.on("select", updateCarouselState);
+    carouselApi.on("reInit", updateCarouselState);
+
+    return () => {
+      carouselApi.off("select", updateCarouselState);
+      carouselApi.off("reInit", updateCarouselState);
+    };
+  }, [carouselApi]);
+
+  useEffect(() => {
+    if (!carouselApi || selectedCard || isPaused) return;
+
+    const timer = setInterval(() => {
+      if (carouselApi.canScrollNext()) {
+        carouselApi.scrollNext();
+      } else {
+        carouselApi.scrollTo(0);
+      }
+    }, 3600);
+
+    return () => clearInterval(timer);
+  }, [carouselApi, isPaused, selectedCard]);
 
   return (
     <Section id="showcase">
@@ -122,48 +182,101 @@ export function Showcase() {
         }
         subtitle="A peek at recent launches across hospitality, trades, retail and wellness."
       />
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {cards.map((c, i) => (
-          <motion.div
-            key={c.name}
-            onClick={() => setSelectedCard(c)}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ delay: i * 0.05, duration: 0.6, ease }}
-            className="group relative block cursor-pointer overflow-hidden rounded-3xl hairline bg-surface-elevated p-3 shadow-soft transition-all hover:-translate-y-1 hover:shadow-elevated"
-          >
-            <div
-              className="relative aspect-[4/3] overflow-hidden rounded-2xl"
-              style={{ background: c.grad }}
+
+      <div
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onFocus={() => setIsPaused(true)}
+        onBlur={() => setIsPaused(false)}
+        className="relative"
+      >
+        <Carousel
+          setApi={setCarouselApi}
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-5">
+            {cards.map((c, i) => (
+              <CarouselItem key={c.name} className="pl-5 md:basis-1/2 lg:basis-1/3">
+                <motion.div
+                  onClick={() => setSelectedCard(c)}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ delay: i * 0.05, duration: 0.6, ease }}
+                  className="group relative block h-full cursor-pointer overflow-hidden rounded-3xl hairline bg-surface-elevated p-3 shadow-soft transition-all hover:-translate-y-1 hover:shadow-elevated"
+                >
+                  <div
+                    className="relative aspect-4/3 overflow-hidden rounded-2xl"
+                    style={{ background: c.grad }}
+                  >
+                    <div className="absolute inset-0 noise opacity-40" />
+                    <div className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full glass px-2.5 py-1 text-[10px] uppercase tracking-widest text-foreground">
+                      {c.tag}
+                    </div>
+                    <div className="absolute inset-x-6 bottom-6 rounded-xl bg-surface-elevated p-3 shadow-elevated">
+                      <div className="flex items-center gap-1">
+                        <span className="h-1.5 w-1.5 rounded-full bg-foreground/30" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-foreground/30" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-foreground/30" />
+                      </div>
+                      <div className="mt-2 h-2 w-2/3 rounded-full bg-foreground/70" />
+                      <div className="mt-1.5 h-2 w-full rounded-full bg-foreground/15" />
+                      <div className="mt-1 h-2 w-4/5 rounded-full bg-foreground/15" />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between px-3 py-4">
+                    <div>
+                      <div className="text-base font-medium">{c.name}</div>
+                      <div className="text-xs text-muted-foreground">{c.city}</div>
+                    </div>
+                    <span className="grid h-8 w-8 place-items-center rounded-full hairline bg-surface-elevated transition-all group-hover:bg-foreground group-hover:text-background">
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
+                  </div>
+                </motion.div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+
+        <div className="mt-7 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            {scrollSnaps.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => scrollTo(index)}
+                className={`h-2 rounded-full transition-all ${
+                  selectedIndex === index ? "w-7 bg-foreground" : "w-2 bg-foreground/20 hover:bg-foreground/40"
+                }`}
+                aria-label={`Go to showcase slide ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={scrollPrev}
+              className="grid h-10 w-10 place-items-center rounded-full hairline bg-surface-elevated transition-colors hover:bg-surface"
+              aria-label="Previous showcase"
             >
-              <div className="absolute inset-0 noise opacity-40" />
-              <div className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full glass px-2.5 py-1 text-[10px] uppercase tracking-widest text-foreground">
-                {c.tag}
-              </div>
-              {/* fake site preview */}
-              <div className="absolute inset-x-6 bottom-6 rounded-xl bg-surface-elevated p-3 shadow-elevated">
-                <div className="flex items-center gap-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-foreground/30" />
-                  <span className="h-1.5 w-1.5 rounded-full bg-foreground/30" />
-                  <span className="h-1.5 w-1.5 rounded-full bg-foreground/30" />
-                </div>
-                <div className="mt-2 h-2 w-2/3 rounded-full bg-foreground/70" />
-                <div className="mt-1.5 h-2 w-full rounded-full bg-foreground/15" />
-                <div className="mt-1 h-2 w-4/5 rounded-full bg-foreground/15" />
-              </div>
-            </div>
-            <div className="flex items-center justify-between px-3 py-4">
-              <div>
-                <div className="text-base font-medium">{c.name}</div>
-                <div className="text-xs text-muted-foreground">{c.city}</div>
-              </div>
-              <span className="grid h-8 w-8 place-items-center rounded-full hairline bg-surface-elevated transition-all group-hover:bg-foreground group-hover:text-background">
-                <ArrowRight className="h-3.5 w-3.5" />
-              </span>
-            </div>
-          </motion.div>
-        ))}
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={scrollNext}
+              className="grid h-10 w-10 place-items-center rounded-full bg-foreground text-background transition-transform hover:scale-[1.03]"
+              aria-label="Next showcase"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </div>
 
       <AnimatePresence>
