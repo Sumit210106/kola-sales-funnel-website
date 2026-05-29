@@ -96,12 +96,12 @@ export function Hero() {
           transition={{ delay: 0.18, duration: 0.75, ease }}
           className="relative mx-auto w-full max-w-xl lg:max-w-none"
         >
-          <div className="absolute -inset-8 rounded-[3rem] bg-brand/10 blur-3xl" aria-hidden />
-          <div className="relative overflow-hidden rounded-[2.25rem] border border-hairline/25 bg-surface-elevated/70 p-3 shadow-elevated backdrop-blur">
+          {/* <div className="absolute -inset-8 rounded-[3rem]  blur-3xl" aria-hidden /> */}
+          <div className="relative overflow-hidden p-3">
             <img
               src="https://static.vecteezy.com/system/resources/thumbnails/000/691/492/small/ribbon-sales-funnel-vector-diagram-template.jpg"
               alt="Ribbon Sales Funnel Diagram"
-              className="w-full min-h-[360px] sm:min-h-[460px] lg:min-h-[560px] object-contain bg-white rounded-[1.75rem] shadow-soft"
+              className="w-full min-h-[360px] sm:min-h-[460px] lg:min-h-[560px] object-contain rounded-[1.75rem]"
             />
           </div>
         </motion.div>
