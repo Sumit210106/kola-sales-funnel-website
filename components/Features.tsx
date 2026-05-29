@@ -17,15 +17,15 @@ export function Features() {
   return (
     <Section id="features">
       <SectionHeader
-        eyebrow="Features"
+        eyebrow="The Solution"
         title={
           <>
-            Built like a SaaS product.
+            Stop losing money to
             <br />
-            <span className="text-gradient">Priced like a coffee.</span>
+            <span className="text-gradient">ugly, slow websites.</span>
           </>
         }
-        subtitle="Every site ships with the essentials a modern small business needs to look credible and convert visitors."
+        subtitle="Every site we build is engineered from the ground up to capture attention, build trust, and drive immediate action."
       />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-[180px]">
@@ -43,11 +43,10 @@ export function Features() {
               <Palette className="h-5 w-5" />
             </div>
             <h3 className="mt-5 text-2xl font-semibold tracking-tight md:text-3xl">
-              Custom design, not a template.
+              Designs engineered to convert.
             </h3>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">
-              Every site is hand designed around your brand, voice and customers. No
-              cookie cutter themes, no drag and drop fingerprints.
+              We don't just make it look pretty. Every layout, color choice, and button placement is scientifically designed to force visitors down the sales funnel.
             </p>
           </div>
           <div className="relative mt-6 grid grid-cols-3 gap-3">
@@ -69,16 +68,16 @@ export function Features() {
         {/* Mobile */}
         <BentoCard
           icon={Smartphone}
-          title="Pixel perfect on every device"
-          desc="Mobile first by default. Tested on iOS, Android, tablets and desktop."
+          title="Turn taps into calls"
+          desc="70% of local searches happen on phones. We optimize the mobile experience so it's frictionless to contact you."
           colSpan="md:col-span-2"
         />
 
         {/* Speed */}
         <BentoCard
           icon={Zap}
-          title="Lightning fast load times"
-          desc="98+ PageSpeed scores. Optimised images, modern stack, edge cached."
+          title="Zero bounce-rate loading"
+          desc="A 1-second delay costs you 20% of your conversions. Our sites load instantly, keeping hot leads engaged."
           colSpan="md:col-span-2"
           extra={
             <div className="mt-5 flex items-end gap-1">
@@ -101,38 +100,38 @@ export function Features() {
         {/* SEO */}
         <BentoCard
           icon={Search}
-          title="SEO foundations baked in"
-          desc="Meta tags, schema, sitemaps, fast Core Web Vitals Google ready on day one."
+          title="Dominate local search"
+          desc="We bake in technical SEO and schema markup so Google ranks you above the competitors still using outdated templates."
           colSpan="md:col-span-3"
         />
 
         {/* Forms */}
         <BentoCard
           icon={MessageSquare}
-          title="Lead capture forms that work"
-          desc="Spam protected forms wired to your inbox the moment your site goes live."
+          title="Frictionless lead funnels"
+          desc="Strategic pop-ups and high-converting contact forms wired directly to your inbox and CRM the moment we launch."
           colSpan="md:col-span-3"
         />
 
         {/* Bookings */}
         <BentoCard
           icon={Calendar}
-          title="Bookings & calendars"
-          desc="Optional Calendly / Square Appointments, let clients book in two taps."
+          title="Automated bookings"
+          desc="We integrate Calendly or Square so high-intent visitors can secure a spot on your calendar without back-and-forth emails."
           colSpan="md:col-span-2"
         />
         {/* Payments */}
         <BentoCard
           icon={CreditCard}
-          title="Stripe & PayPal payments"
-          desc="Accept deposits or sell products without a separate platform."
+          title="Upfront deposits"
+          desc="Stop chasing invoices. We integrate Stripe so you can capture payments and secure commitments instantly."
           colSpan="md:col-span-2"
         />
         {/* Analytics */}
         <BentoCard
           icon={BarChart3}
-          title="Real analytics, no fluff"
-          desc="GA4 or Plausible see exactly what's converting from day one."
+          title="Track every dollar"
+          desc="Pre-configured GA4 and Meta Pixels so you can trace exactly which ads and keywords are making you money."
           colSpan="md:col-span-2"
         />
       </div>

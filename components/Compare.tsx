@@ -40,7 +40,7 @@ export function Compare() {
             Feature
           </div>
           <div className="bg-foreground p-4 text-center text-xs font-semibold uppercase tracking-widest text-background">
-            WebsitePro AU
+            Kola
           </div>
           <div className="bg-surface-elevated p-4 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground">
             DIY builders

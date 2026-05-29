@@ -1,77 +1,87 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { CreditCard, Sparkles, Eye, Rocket } from "lucide-react";
 import { Section, SectionHeader } from "./Primitives";
 
-
 const ease = [0.22, 1, 0.36, 1] as const;
-// const fadeUp = {
-//   hidden: { opacity: 0, y: 24 },
-//   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
-// };
-
-
 
 export function HowItWorks() {
   const steps = [
     {
       n: "01",
-      t: "Place your order",
-      d: "Pay $99 and complete a 5-minute questionnaire about your business.",
+      icon: CreditCard,
+      t: "Choose Your Plan",
+      d: "Select a high-converting plan and tell us about your business goals.",
     },
     {
       n: "02",
-      t: "We design & build",
-      d: "An Australian designer crafts your site within 48 hours.",
+      icon: Sparkles,
+      t: "We Design & Build",
+      d: "Our experts craft your custom site with conversion tactics built in.",
     },
     {
       n: "03",
-      t: "Review & revise",
-      d: "Get a private preview link, request changes, and approve.",
+      icon: Eye,
+      t: "Review & Refine",
+      d: "Preview the live draft, request edits, and make it perfect.",
     },
     {
       n: "04",
-      t: "Go live",
-      d: "We launch your site to the world and hand over full ownership.",
+      icon: Rocket,
+      t: "Go Live & Convert",
+      d: "We connect your domain, wire forms to your email, and launch.",
     },
   ];
+
   return (
-    <Section id="how" className="bg-surface">
+    <Section id="how" className="bg-surface relative overflow-hidden">
+      {/* Subtle light accent */}
+      <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-brand/5 blur-3xl" aria-hidden />
+
       <SectionHeader
-        eyebrow="Process"
+        eyebrow="The Process"
         title={
           <>
-            From idea to launch <span className="text-gradient">in days, not months.</span>
+            From click to conversion <span className="text-gradient">made simple.</span>
           </>
         }
       />
-      <div className="relative grid grid-cols-1 gap-5 md:grid-cols-4">
-        <div
-          className="absolute left-0 right-0 top-12 hidden h-px md:block"
-          style={{
-            background:
-              "repeating-linear-gradient(90deg, var(--hairline) 0 6px, transparent 6px 12px)",
-          }}
-          aria-hidden
-        />
-        {steps.map((s, i) => (
-          <motion.div
-            key={s.n}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ delay: i * 0.08, duration: 0.6, ease }}
-            className="relative rounded-3xl hairline bg-surface-elevated p-6 shadow-soft"
-          >
-            <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-foreground font-display text-sm font-semibold text-background">
-              {s.n}
-            </div>
-            <h3 className="text-lg font-semibold tracking-tight">{s.t}</h3>
-            <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{s.d}</p>
-          </motion.div>
-        ))}
+      
+      <div className="relative grid grid-cols-1 gap-6 md:grid-cols-4">
+        {steps.map((s, i) => {
+          const Icon = s.icon;
+          return (
+            <motion.div
+              key={s.n}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ delay: i * 0.08, duration: 0.6, ease }}
+              className="group relative overflow-hidden rounded-3xl hairline bg-surface-elevated p-6 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated"
+            >
+              {/* Giant background numbers */}
+              <div className="absolute right-4 top-2 select-none font-display text-8xl font-bold text-foreground/[0.03] transition-colors duration-300 group-hover:text-brand/5">
+                {s.n}
+              </div>
+
+              <div className="relative z-10">
+                {/* Icon wrapper */}
+                <div className="mb-6 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-foreground/5 text-foreground transition-colors duration-300 group-hover:bg-brand group-hover:text-brand-foreground">
+                  <Icon className="h-5 w-5" />
+                </div>
+                
+                <h3 className="text-lg font-semibold tracking-tight text-foreground transition-colors duration-300 group-hover:text-brand">
+                  {s.t}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {s.d}
+                </p>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </Section>
   );
 }
-

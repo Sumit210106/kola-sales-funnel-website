@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Check,
@@ -83,6 +83,14 @@ export function Pricing() {
   const [selectedTier, setSelectedTier] = useState<Tier | null>(null);
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+
+  const dialogContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (showCheckoutForm && dialogContentRef.current) {
+      dialogContentRef.current.scrollTop = 0;
+    }
+  }, [showCheckoutForm]);
 
   const tiers: Tier[] = [
     {
@@ -174,7 +182,7 @@ export function Pricing() {
             <span className="text-gradient">No hidden fees, ever.</span>
           </>
         }
-        subtitle="One-off pricing in AUD, GST included. Optional hosting & maintenance from $19/month."
+        subtitle="One-off pricing, GST included. Optional hosting & maintenance from A$19/month."
       />
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
@@ -185,11 +193,10 @@ export function Pricing() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ delay: i * 0.08, duration: 0.6, ease }}
-            className={`relative flex flex-col rounded-3xl p-7 shadow-soft transition-all hover:-translate-y-1 ${
-              t.highlight
+            className={`relative flex flex-col rounded-3xl p-7 shadow-soft transition-all hover:-translate-y-1 ${t.highlight
                 ? "bg-foreground text-background shadow-elevated"
                 : "hairline bg-surface-elevated"
-            }`}
+              }`}
           >
             {t.highlight && (
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-brand-foreground shadow-glow">
@@ -199,32 +206,27 @@ export function Pricing() {
             <div className="flex items-baseline justify-between">
               <h3 className="text-xl font-semibold tracking-tight">{t.name}</h3>
               <span
-                className={`text-[10px] uppercase tracking-widest ${
-                  t.highlight ? "text-background/60" : "text-muted-foreground"
-                }`}
+                className={`text-[10px] uppercase tracking-widest ${t.highlight ? "text-background/60" : "text-muted-foreground"
+                  }`}
               >
                 {t.tag}
               </span>
             </div>
             <div className="mt-6 flex items-end gap-2">
               <span className={`text-sm line-through ${t.highlight ? "text-background/50" : "text-muted-foreground"}`}>
-                ${t.original}
+                A${t.original}
               </span>
               <span className="font-display text-6xl font-semibold tracking-[-0.04em]">
-                ${t.price}
-              </span>
-              <span className={`mb-2 text-xs ${t.highlight ? "text-background/60" : "text-muted-foreground"}`}>
-                AUD
+                A${t.price}
               </span>
             </div>
             <button
               type="button"
               onClick={() => openCheckout(t)}
-              className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform hover:scale-[1.02] ${
-                t.highlight
+              className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform hover:scale-[1.02] ${t.highlight
                   ? "bg-background text-foreground"
                   : "bg-foreground text-background"
-              }`}
+                }`}
             >
               {t.cta}
               <ArrowRight className="h-4 w-4" />
@@ -233,19 +235,17 @@ export function Pricing() {
               {t.features.map((f) => (
                 <li
                   key={f.label}
-                  className={`flex items-start justify-between gap-3 ${
-                    f.featured ? "rounded-2xl bg-brand/90 px-3 py-2 text-brand-foreground shadow-glow" : ""
-                  }`}
+                  className={`flex items-start justify-between gap-3 ${f.featured ? "rounded-2xl bg-brand/90 px-3 py-2 text-brand-foreground shadow-glow" : ""
+                    }`}
                 >
                   <span className="flex min-w-0 items-start gap-2.5">
                     <span
-                      className={`mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full ${
-                        f.featured
+                      className={`mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full ${f.featured
                           ? "bg-brand-foreground/20 text-brand-foreground"
                           : t.highlight
                             ? "bg-background/15 text-background"
                             : "bg-foreground text-background"
-                      }`}
+                        }`}
                     >
                       {f.featured ? <Sparkles className="h-2.5 w-2.5" /> : <Check className="h-2.5 w-2.5" />}
                     </span>
@@ -254,16 +254,14 @@ export function Pricing() {
                     </span>
                   </span>
                   <span
-                    className={`shrink-0 whitespace-nowrap text-xs font-semibold ${
-                      f.featured ? "" : t.highlight ? "text-background/85" : "text-foreground"
-                    }`}
+                    className={`shrink-0 whitespace-nowrap text-xs font-semibold ${f.featured ? "" : t.highlight ? "text-background/85" : "text-foreground"
+                      }`}
                   >
                     <span
-                      className={`mr-1.5 line-through ${
-                        f.featured ? "opacity-65" : t.highlight ? "text-background/45" : "text-muted-foreground"
-                      }`}
+                      className={`mr-1.5 line-through ${f.featured ? "opacity-65" : t.highlight ? "text-background/45" : "text-muted-foreground"
+                        }`}
                     >
-                      ${f.value}
+                      A${f.value}
                     </span>
                     Free
                   </span>
@@ -295,10 +293,13 @@ export function Pricing() {
           }
         }}
       >
-        <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto rounded-3xl border-hairline p-0 shadow-elevated">
+        <DialogContent ref={dialogContentRef} className="max-h-[90dvh] max-w-4xl overflow-y-auto rounded-3xl border-hairline p-0 shadow-elevated">
           {selectedTier && (
             <div className="grid bg-surface-elevated md:grid-cols-[1fr_0.78fr]">
-              <div className="p-6 md:p-8">
+              <div 
+                className="p-6 md:p-8"
+                style={showCheckoutForm ? { paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom))" } : undefined}
+              >
                 {showCheckoutForm ? (
                   <CheckoutForm
                     planName={selectedTier.name}
@@ -331,11 +332,10 @@ export function Pricing() {
                             type="button"
                             disabled={includedWithGrowth}
                             onClick={() => toggleAddon(addon.name)}
-                            className={`flex items-start gap-4 rounded-3xl p-4 text-left transition-all ${
-                              selected
+                            className={`flex items-start gap-4 rounded-3xl p-4 text-left transition-all ${selected
                                 ? "bg-background ring-1 ring-foreground/15 shadow-soft"
                                 : "hairline bg-surface-elevated hover:bg-background"
-                            } ${includedWithGrowth ? "cursor-default" : ""}`}
+                              } ${includedWithGrowth ? "cursor-default" : ""}`}
                           >
                             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-foreground text-background">
                               <Icon className="h-4 w-4" />
@@ -346,12 +346,12 @@ export function Pricing() {
                                 <span className="shrink-0 rounded-full bg-surface px-2.5 py-1 text-[11px] font-semibold">
                                   {includedWithGrowth ? (
                                     <>
-                                      <span className="mr-1 line-through opacity-50">$19/mo</span>
+                                      <span className="mr-1 line-through opacity-50">A$19/mo</span>
                                       Free
                                     </>
                                   ) : (
                                     <>
-                                      ${addon.price}
+                                      A${addon.price}
                                       {addon.cadence}
                                     </>
                                   )}
@@ -362,9 +362,8 @@ export function Pricing() {
                               </span>
                             </span>
                             <span
-                              className={`mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full border ${
-                                selected ? "border-foreground bg-foreground text-background" : "border-hairline"
-                              }`}
+                              className={`mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full border ${selected ? "border-foreground bg-foreground text-background" : "border-hairline"
+                                }`}
                             >
                               {selected && <Check className="h-3 w-3" />}
                             </span>
@@ -376,20 +375,23 @@ export function Pricing() {
                 )}
               </div>
 
-              <aside className="bg-foreground p-6 text-background md:p-8">
+              <aside 
+                className={`bg-foreground p-6 text-background md:p-8 ${showCheckoutForm ? "hidden md:block" : ""}`}
+                style={{ paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom))" }}
+              >
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-background/50">
                   Order summary
                 </p>
                 <h3 className="mt-3 font-display text-3xl font-semibold">{selectedTier.name}</h3>
                 <div className="mt-6 space-y-3 text-sm">
-                  <SummaryRow label={`${selectedTier.name} website`} value={`$${selectedTier.price}`} />
+                  <SummaryRow label={`${selectedTier.name} website`} value={`A$${selectedTier.price}`} />
                   {selectedTier.features.slice(0, 4).map((item) => (
                     <SummaryRow
                       key={item.label}
                       label={item.label}
                       value={
                         <>
-                          <span className="mr-1.5 line-through text-background/35">${item.value}</span>
+                          <span className="mr-1.5 line-through text-background/35">A${item.value}</span>
                           Free
                         </>
                       }
@@ -399,7 +401,7 @@ export function Pricing() {
                     <SummaryRow
                       key={addon.name}
                       label={addon.name}
-                      value={`$${addon.price}${addon.cadence}`}
+                      value={`A$${addon.price}${addon.cadence}`}
                     />
                   ))}
                 </div>
@@ -409,13 +411,13 @@ export function Pricing() {
                     <div>
                       <p className="text-xs text-background/45">Due once</p>
                       <p className="mt-1 font-display text-5xl font-semibold tracking-[-0.04em]">
-                        ${selectedTier.price + oneTimeAddonTotal}
+                        A${selectedTier.price + oneTimeAddonTotal}
                       </p>
                     </div>
                     {monthlyAddonTotal > 0 && (
                       <div className="text-right">
                         <p className="text-xs text-background/45">Monthly</p>
-                        <p className="mt-1 text-2xl font-semibold">${monthlyAddonTotal}/mo</p>
+                        <p className="mt-1 text-2xl font-semibold">A${monthlyAddonTotal}/mo</p>
                       </div>
                     )}
                   </div>

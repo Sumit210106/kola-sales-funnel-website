@@ -156,21 +156,18 @@ export function Showcase() {
   }, [carouselApi]);
 
   useEffect(() => {
-    if (!carouselApi || selectedCard || isPaused) return;
-
-    const timer = setInterval(() => {
-      if (carouselApi.canScrollNext()) {
-        carouselApi.scrollNext();
-      } else {
-        carouselApi.scrollTo(0);
-      }
-    }, 3600);
-
-    return () => clearInterval(timer);
-  }, [carouselApi, isPaused, selectedCard]);
+    if (selectedCard) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [selectedCard]);
 
   return (
-    <Section id="showcase">
+    <Section id="showcase" className="!pb-0">
       <SectionHeader
         eyebrow="Showcase"
         title={
@@ -209,23 +206,14 @@ export function Showcase() {
                   transition={{ delay: i * 0.05, duration: 0.6, ease }}
                   className="group relative block h-full cursor-pointer overflow-hidden rounded-3xl hairline bg-surface-elevated p-3 shadow-soft transition-all hover:-translate-y-1 hover:shadow-elevated"
                 >
-                  <div
-                    className="relative aspect-4/3 overflow-hidden rounded-2xl"
-                    style={{ background: c.grad }}
-                  >
-                    <div className="absolute inset-0 noise opacity-40" />
-                    <div className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full glass px-2.5 py-1 text-[10px] uppercase tracking-widest text-foreground">
+                  <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-white border border-hairline/10">
+                    <img
+                      src="https://static.vecteezy.com/system/resources/thumbnails/000/691/492/small/ribbon-sales-funnel-vector-diagram-template.jpg"
+                      alt={c.name}
+                      className="w-full h-full object-contain p-2"
+                    />
+                    <div className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/80 px-2.5 py-1 text-[10px] uppercase tracking-widest text-foreground backdrop-blur-xs border border-hairline/25">
                       {c.tag}
-                    </div>
-                    <div className="absolute inset-x-6 bottom-6 rounded-xl bg-surface-elevated p-3 shadow-elevated">
-                      <div className="flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-foreground/30" />
-                        <span className="h-1.5 w-1.5 rounded-full bg-foreground/30" />
-                        <span className="h-1.5 w-1.5 rounded-full bg-foreground/30" />
-                      </div>
-                      <div className="mt-2 h-2 w-2/3 rounded-full bg-foreground/70" />
-                      <div className="mt-1.5 h-2 w-full rounded-full bg-foreground/15" />
-                      <div className="mt-1 h-2 w-4/5 rounded-full bg-foreground/15" />
                     </div>
                   </div>
                   <div className="flex items-center justify-between px-3 py-4">
@@ -294,85 +282,95 @@ export function Showcase() {
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ duration: 0.4, ease }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-xl overflow-hidden rounded-[2rem] hairline bg-surface-elevated shadow-elevated"
+              className="relative w-full max-w-xl max-h-[90dvh] overflow-y-auto rounded-3xl sm:rounded-[2rem] border border-hairline bg-surface-elevated shadow-elevated"
             >
-              {/* Header Gradient */}
-              <div
-                className="relative h-44 overflow-hidden p-6 text-foreground flex flex-col justify-end"
-                style={{ background: selectedCard.grad }}
-              >
-                <div className="absolute inset-0 noise opacity-30" />
+              {/* Header Image */}
+              <div className="relative aspect-video w-full overflow-hidden bg-white border-b border-hairline flex items-center justify-center p-6">
+                <img
+                  src="https://static.vecteezy.com/system/resources/thumbnails/000/691/492/small/ribbon-sales-funnel-vector-diagram-template.jpg"
+                  alt={selectedCard.name}
+                  className="w-full h-full object-contain"
+                />
                 <button
                   onClick={() => setSelectedCard(null)}
-                  className="absolute right-4 top-4 rounded-full bg-background/25 p-2 text-foreground hover:bg-background/40 transition-colors backdrop-blur-sm"
+                  className="absolute right-4 top-4 rounded-full bg-foreground/10 p-2 text-foreground hover:bg-foreground/20 transition-colors backdrop-blur-xs border border-hairline/20 cursor-pointer"
                 >
                   <X className="h-4 w-4" />
                 </button>
-                <div className="relative z-10">
-                  <span className="inline-block rounded-full bg-background/20 px-2.5 py-0.5 text-[9px] uppercase tracking-wider text-foreground backdrop-blur-sm">
-                    {selectedCard.tag}
-                  </span>
-                  <h3 className="mt-2 text-2xl font-semibold leading-tight tracking-tight text-foreground">
-                    {selectedCard.name}
-                  </h3>
-                  <p className="text-xs text-foreground/80">{selectedCard.city}</p>
-                </div>
               </div>
 
               {/* Body Details */}
-              <div className="p-6 md:p-8 flex flex-col gap-6">
+              <div 
+                className="p-6 sm:p-8 flex flex-col gap-6"
+                style={{ paddingBottom: "calc(2rem + env(safe-area-inset-bottom))" }}
+              >
+                <div>
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className="inline-block rounded-full bg-foreground/10 px-2.5 py-0.5 text-[10px] uppercase tracking-wider text-foreground border border-hairline/25">
+                      {selectedCard.tag}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{selectedCard.city}</span>
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold leading-tight tracking-tight text-foreground">
+                    {selectedCard.name}
+                  </h3>
+                </div>
+
                 <div>
                   <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Project Overview</h4>
-                  <p className="text-sm text-foreground/85 leading-relaxed">
+                  <p className="text-sm text-foreground/80 leading-relaxed">
                     {selectedCard.description}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Performance</h4>
-                    <div className="flex items-center gap-1.5 text-[oklch(0.7_0.2_150)] font-semibold text-sm">
-                      <Zap className="h-4 w-4 fill-[oklch(0.7_0.2_150)]" /> PageSpeed {selectedCard.performance}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="rounded-2xl bg-surface p-4 border border-hairline/40">
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Performance</h4>
+                    <div className="flex items-center gap-1.5 text-[oklch(0.65_0.19_150)] font-bold text-base">
+                      <Zap className="h-4 w-4 fill-[oklch(0.65_0.19_150)]" /> PageSpeed {selectedCard.performance}
                     </div>
                   </div>
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Delivery</h4>
-                    <div className="text-sm font-medium text-foreground">
+                  <div className="rounded-2xl bg-surface p-4 border border-hairline/40">
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Delivery Time</h4>
+                    <div className="text-base font-semibold text-foreground">
                       Delivered in {selectedCard.delivery}
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Key Deliverables</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Key Deliverables</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {selectedCard.features.map((feat) => (
-                      <div key={feat} className="flex items-center gap-2 text-xs text-foreground/80">
-                        <span className="h-1.5 w-1.5 rounded-full bg-brand" />
-                        {feat}
+                      <div key={feat} className="flex items-center gap-2 text-xs text-foreground/80 bg-surface/50 px-3.5 py-2 rounded-xl border border-hairline/20">
+                        <span className="h-1.5 w-1.5 rounded-full bg-brand shrink-0" />
+                        <span className="leading-tight">{feat}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Footer Actions */}
-                <div className="mt-4 flex gap-3">
+                <div className="mt-4 flex flex-col sm:flex-row gap-3">
                   <a
                     href={selectedCard.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-foreground py-3 text-sm font-medium text-background hover:scale-[1.01] active:scale-[0.99] transition-transform cursor-pointer"
+                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-foreground py-3.5 text-sm font-medium text-background hover:scale-[1.01] active:scale-[0.99] transition-transform cursor-pointer"
                   >
                     Visit live site
                     <ArrowUpRight className="h-4 w-4" />
                   </a>
                   <button
                     onClick={() => setSelectedCard(null)}
-                    className="inline-flex items-center justify-center gap-2 rounded-full hairline bg-surface px-5 py-3 text-sm font-medium text-foreground hover:bg-surface-elevated transition-colors"
+                    className="inline-flex items-center justify-center gap-2 rounded-full hairline bg-surface px-6 py-3.5 text-sm font-medium text-foreground hover:bg-surface-elevated transition-colors cursor-pointer"
                   >
                     Close
                   </button>
                 </div>
+
+                {/* Scroll spacer to prevent WebKit scroll clipping */}
+                <div className="h-2 sm:h-4 shrink-0" />
               </div>
             </motion.div>
           </motion.div>

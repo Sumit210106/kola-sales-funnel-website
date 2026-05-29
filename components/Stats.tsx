@@ -14,13 +14,13 @@ const fadeUp = {
 
 export function Stats() {
   const items = [
-    { k: 500, suffix: "+", v: "Websites delivered" },
-    { k: 48, suffix: "h", v: "Avg. turnaround" },
-    { k: 4.9, suffix: "★", v: "Customer rating" },
-    { k: 30, suffix: " day", v: "Money-back guarantee" },
+    { k: 214, suffix: "%", v: "Avg. ROI in 30 days" },
+    { k: 48, suffix: "h", v: "To launch your funnel" },
+    { k: 98, suffix: "/100", v: "PageSpeed Score" },
+    { k: 3, suffix: "x", v: "More local leads" },
   ];
   return (
-    <Section className="!py-16">
+    <Section>
       <div className="grid grid-cols-2 gap-px overflow-hidden rounded-3xl hairline bg-hairline md:grid-cols-4">
         {items.map((it, i) => (
           <motion.div
